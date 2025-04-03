@@ -3,7 +3,6 @@ whisper
 pyannote.audio
 torch
 transformers
-pyaudio
 pandas
 numpy
 pydub
