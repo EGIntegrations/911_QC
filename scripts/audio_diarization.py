@@ -37,3 +37,19 @@ for segment, _, speaker in diarization_result.itertracks(yield_label=True):
             segment_transcript += whisper_segment["text"].strip() + " "
 
     print(f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript.strip()}")
+
+# Save full transcript for later use
+diarized_transcript = ""
+for segment, _, speaker in diarization_result.itertracks(yield_label=True):
+    start_time = round(segment.start, 2)
+    end_time = round(segment.end, 2)
+    segment_transcript = ""
+    for whisper_segment in transcript_result["segments"]:
+        if whisper_segment["start"] >= segment.start and whisper_segment["end"] <= segment.end:
+            segment_transcript += whisper_segment["text"].strip() + " "
+    diarized_transcript += f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript.strip()}\n"
+
+# Save to JSON
+import json
+with open("data/transcripts/diarized_transcript.json", "w") as f:
+    json.dump({"transcript": diarized_transcript}, f, indent=2)
