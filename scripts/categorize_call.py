@@ -59,3 +59,6 @@ except json.JSONDecodeError as e:
 
 except Exception as e:
     print("An error occurred:", e)
+
+with open("data/categorized_calls/call_category.json", "w") as f:
+    json.dump(response, f, indent=2)
