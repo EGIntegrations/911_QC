@@ -1,8 +1,0 @@
-{
-    "steps": [
-        {"step": "greeting", "expected": "911, what's your emergency?"},
-        {"step": "location_request", "expected": "What is your location?"},
-        {"step": "nature_of_emergency", "expected": "What is the nature of your emergency?"},
-        {"step": "reassurance", "expected": "Help is on the way. Stay on the line if it is safe to do so."}
-    ]
-}
