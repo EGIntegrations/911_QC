@@ -15,7 +15,7 @@ if st.button("🎙️ Start Test Call (10 sec)"):
     seconds = 10
     recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
     sd.wait()
-    write("temp_audio.wav", fs, recording)
+    write("data/audio_files/temp_audio.wav", fs, recording)
     st.success("✅ Recorded. Now analyzing...")
 
     # Run the pipeline
