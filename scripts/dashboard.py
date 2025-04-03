@@ -8,8 +8,8 @@ st.title("🚨 911 Call AI Monitoring Dashboard")
 # Load report
 report_path = "data/final_911_report.json"
 
-if not os.path.exists(report_path):
-    st.warning("No processed call found. Run `process_911_call.py` first.")
+if not os.path.exists(report_path) or os.path.getsize(report_path) == 0:
+    st.warning("No report data available. Please run process_911_call.py first.")
 else:
     with open(report_path, "r") as f:
         report = json.load(f)
