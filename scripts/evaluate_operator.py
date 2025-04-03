@@ -7,17 +7,12 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
 # Load the expected operator script
-with open("scripts/operator_script.json", "r") as f:
+with open("data/operator_script.json", "r") as f:
     expected_script = json.load(f)
 
-# Example transcribed call (Replace this with actual transcription input)
-transcribed_call = """
-Operator: 911, what’s your emergency?
-Caller: There’s a car accident outside my house!
-Operator: Where is your location?
-Caller: It’s at 5th Avenue and Main Street.
-Operator: Help is on the way. Stay on the line if it is safe.
-"""
+# Load actual diarized transcript
+with open("data/transcripts/diarized_transcript.json") as f:
+    transcribed_call = json.load(f)["transcript"]
 
 # Construct prompt for GPT evaluation
 prompt = f"""
