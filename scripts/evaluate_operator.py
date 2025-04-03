@@ -54,7 +54,7 @@ try:
 
     # Store results
     with open("data/operator_evaluation.json", "w") as f:
-        json.dump(parsed_result, f, indent=4)
+        json.dump(json.loads(response.choices[0].message.content), f, indent=2)
 
 except json.JSONDecodeError as e:
     print("Failed to decode JSON:", e)
