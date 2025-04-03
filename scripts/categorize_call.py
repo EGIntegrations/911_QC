@@ -63,4 +63,4 @@ except Exception as e:
     print("An error occurred:", e)
 
 with open("data/categorized_calls/call_category.json", "w") as f:
-    json.dump(response, f, indent=2)
+    json.dump(json.loads(response.choices[0].message.content), f, indent=2)
