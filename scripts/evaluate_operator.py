@@ -7,7 +7,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
 # Load the expected operator script
-with open("operator_script.json", "r") as f:
+with open("scripts/operator_script.json", "r") as f:
     expected_script = json.load(f)
 
 # Example transcribed call (Replace this with actual transcription input)
