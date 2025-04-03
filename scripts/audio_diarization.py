@@ -14,7 +14,7 @@ pipeline = Pipeline.from_pretrained(
 )
 
 # Define audio file (your recorded file)
-audio_file = "temp_audio.wav"
+audio_file = "data/audio_files/temp_audio.wav"
 
 # Perform Whisper transcription
 transcript_result = model.transcribe(audio_file)
