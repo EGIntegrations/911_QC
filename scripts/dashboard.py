@@ -14,6 +14,11 @@ else:
     with open(report_path, "r") as f:
         try:
             report = json.load(f)
+            st.subheader("📌 Call Category")
+            st.json(report.get("call_category", {}))
+
+            st.subheader("📝 Operator Evaluation")
+            st.json(report.get("operator_evaluation", {}))
         except json.JSONDecodeError:
             st.error("The report file exists but is not valid JSON.")
 
