@@ -4,6 +4,9 @@ import json
 import sounddevice as sd
 from scipy.io.wavfile import write
 import subprocess
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.set_page_config(page_title="911 Call AI Dashboard", layout="centered")
 st.title("🚨 911 Call AI Monitoring Dashboard")
