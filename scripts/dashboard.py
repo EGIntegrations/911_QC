@@ -29,8 +29,7 @@ report_path = "data/final_911_report.json"
 if not os.path.exists(report_path) or os.stat(report_path).st_size == 0:
     st.warning("No report data available. Click above to record a test call.")
 else:
-  # after the try block where you loaded the report
-try:
+    try:
     with open(report_path, "r") as f:
         report = json.load(f)
 
