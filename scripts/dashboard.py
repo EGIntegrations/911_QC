@@ -30,17 +30,17 @@ if not os.path.exists(report_path) or os.stat(report_path).st_size == 0:
     st.warning("No report data available. Click above to record a test call.")
 else:
     try:
-    with open(report_path, "r") as f:
-        report = json.load(f)
+        with open(report_path, "r") as f:
+            report = json.load(f)
 
-    st.subheader("🗣️ Transcript")
-    st.code(report.get("transcript", "Transcript not found."), language="text")
+        st.subheader("🗣️ Transcript")
+        st.code(report.get("transcript", "Transcript not found."), language="text")
 
-    st.subheader("📌 Call Category")
-    st.json(report.get("call_category", {}))
+        st.subheader("📌 Call Category")
+        st.json(report.get("call_category", {}))
 
-    st.subheader("📝 Operator Evaluation")
-    st.json(report.get("operator_evaluation", {}))
+        st.subheader("📝 Operator Evaluation")
+        st.json(report.get("operator_evaluation", {}))
 
-except json.JSONDecodeError:
-    st.error("The report file exists but is not valid JSON.")
+    except json.JSONDecodeError:
+        st.error("The report file exists but is not valid JSON.")
