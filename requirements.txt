@@ -10,3 +10,4 @@ requests
 ffmpeg-python
 sounddevice 
 scipy
+portaudio
