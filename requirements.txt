@@ -10,3 +10,4 @@ requests
 ffmpeg-python
 scipy
 python-dotenv
+ffmpeg-python
