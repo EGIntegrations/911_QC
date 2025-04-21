@@ -62,5 +62,6 @@ except json.JSONDecodeError as e:
 except Exception as e:
     print("An error occurred:", e)
 
+os.makedirs("data/categorized_calls", exist_ok=True)
 with open("data/categorized_calls/call_category.json", "w") as f:
-    json.dump(json.loads(response.choices[0].message.content), f, indent=2)
+    json.dump(parsed_result, f, indent=2)
