@@ -2,6 +2,7 @@ import json
 from openai import OpenAI
 from dotenv import load_dotenv
 from pathlib import Path
+import os
 
 # Compute project root and data directories
 BASE_DIR = Path(__file__).resolve().parent.parent
