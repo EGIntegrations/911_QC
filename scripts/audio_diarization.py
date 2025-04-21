@@ -9,7 +9,7 @@ print("Starting audio_diarization.py")
 try:
     print("Loading Whisper model...")
     # Load Whisper model
-    model = whisper.load_model("medium")
+    model = whisper.load_model("tiny", device="cpu")
 
     print("Loading Pyannote diarization pipeline...")
     # Load Pyannote pipeline for diarization (using your READ token)
