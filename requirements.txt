@@ -8,6 +8,5 @@ numpy
 pydub
 requests
 ffmpeg-python
-sounddevice 
 scipy
 portaudio
