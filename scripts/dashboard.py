@@ -38,8 +38,8 @@ if uploaded_file:
         f.write(uploaded_file.read())
 
     # Run the pipeline scripts
+    st.info("🔊 Running audio_diarization.py...")
     try:
-        st.info("🔊 Running audio_diarization.py...")
         result = subprocess.run(
             [sys.executable, "scripts/audio_diarization.py"],
             check=True,
@@ -51,6 +51,8 @@ if uploaded_file:
     except subprocess.CalledProcessError as e:
         st.error("❌ Diarization failed.")
         st.code(e.stderr)
+    except Exception as ex:
+        st.error(f"⚠️ An unexpected error occurred in audio_diarization.py: {ex}")
 
     try:
         st.info("📂 Running categorize_call.py...")
