@@ -7,6 +7,9 @@ import json
 print("Starting audio_diarization.py")
 
 try:
+    print("Checking if ffmpeg is installed...")
+    if os.system("ffmpeg -version") != 0:
+        raise EnvironmentError("ffmpeg is not installed or not found in PATH. Please install ffmpeg and try again.")
     print("Loading Whisper model...")
     # Load Whisper model
     model = whisper.load_model("tiny", device="cpu")
