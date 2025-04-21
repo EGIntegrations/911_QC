@@ -1,10 +1,11 @@
 import pyaudio
 import wave
-import whisper
+import openai
+import os
 import tempfile
 
-# Set up Whisper model
-model = whisper.load_model("medium")
+# Set up OpenAI Whisper API
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Audio settings
 FORMAT = pyaudio.paInt16
@@ -40,7 +41,9 @@ wf.setframerate(RATE)
 wf.writeframes(b''.join(frames))
 wf.close()
 
-# Transcribe audio immediately
-result = model.transcribe(AUDIO_OUTPUT_FILENAME)
+# Transcribe audio using OpenAI Whisper API
+print("Transcribing with OpenAI whisper-1...")
+with open(AUDIO_OUTPUT_FILENAME, "rb") as audio_file:
+    response = openai.Audio.transcribe(model="whisper-1", file=audio_file)
 print("\nTranscription:")
-print(result["text"])
+print(response["text"])
