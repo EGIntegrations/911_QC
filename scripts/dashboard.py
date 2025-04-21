@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(page_title="911 Call AI Monitoring Dashboard", layout="centered")
+
 import os
 import json
 # Only attempt mic recording when not on Streamlit Cloud
@@ -20,7 +22,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-st.set_page_config(page_title="911 Call AI Monitoring Dashboard", layout="centered")
 st.title("🚨 911 Call AI Monitoring Dashboard")
 
 # Upload audio
