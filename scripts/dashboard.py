@@ -1,8 +1,7 @@
 import streamlit as st
-import sys
-set_page = st.set_page_config
-set_page(page_title="911 Call AI Monitoring Dashboard", layout="centered")
+st.set_page_config(page_title="911 Call AI Monitoring Dashboard", layout="centered")
 
+import sys
 import os
 import json
 # Only attempt mic recording when not on Streamlit Cloud
