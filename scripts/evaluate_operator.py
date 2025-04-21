@@ -4,6 +4,10 @@ from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
+# Path to the diarized transcript JSON
+TRANSCRIPT_PATH = os.path.join("data", "transcripts", "diarized_transcript.json")
+print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
+
 # Load OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
@@ -24,12 +28,15 @@ if not os.path.exists("data/operator_script.json"):
 # Load the expected operator script
 with open("data/operator_script.json", "r") as f:
     expected_script = json.load(f)
+print("DEBUG: Expected operator steps:", expected_script.get("script", []))
 
-# Load actual diarized transcript
 # Ensure the transcripts directory exists
-os.makedirs("data/transcripts", exist_ok=True)
-with open("data/transcripts/diarized_transcript.json") as f:
+os.makedirs(os.path.dirname(TRANSCRIPT_PATH), exist_ok=True)
+
+# Load and debug-print the actual transcript
+with open(TRANSCRIPT_PATH, "r") as f:
     transcribed_call = json.load(f)["transcript"]
+print("DEBUG: First 200 characters of transcribed_call:", transcribed_call[:200])
 
 # Construct prompt for GPT evaluation
 prompt = f"""
