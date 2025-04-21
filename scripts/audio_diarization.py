@@ -1,7 +1,9 @@
 import os
-# Extend PATH to include local ffmpeg binary
-ffmpeg_path = os.path.abspath("bin")
-os.environ["PATH"] += os.pathsep + ffmpeg_path
+# Extend PATH to include local ffmpeg binary if it exists
+ffmpeg_path = os.path.join("bin", "ffmpeg")
+if os.path.isfile(ffmpeg_path):
+    os.environ["PATH"] = f"{os.path.abspath('bin')}:" + os.environ["PATH"]
+    print(f"Using bundled ffmpeg from: {ffmpeg_path}")
 import whisper
 from pyannote.audio import Pipeline
 import torch
@@ -12,7 +14,7 @@ print("Starting audio_diarization.py")
 try:
     print("Checking if ffmpeg is installed...")
     if os.system("ffmpeg -version") != 0:
-        raise EnvironmentError("ffmpeg is not installed or not found in PATH. Please install ffmpeg and try again.")
+        raise EnvironmentError("ffmpeg is not installed or not found in PATH. Using bundled version failed.")
     print("Loading Whisper model...")
     # Load Whisper model
     model = whisper.load_model("tiny", device="cpu")
