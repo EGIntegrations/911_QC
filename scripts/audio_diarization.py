@@ -67,6 +67,8 @@ try:
         diarized_transcript += f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript.strip()}\n"
 
     print("Saving transcript to JSON...")
+    # Make sure the directory exists
+    os.makedirs("data/transcripts", exist_ok=True)
     # Save to JSON
     with open("data/transcripts/diarized_transcript.json", "w") as f:
         json.dump({"transcript": diarized_transcript}, f, indent=2)
