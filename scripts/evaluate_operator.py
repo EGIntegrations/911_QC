@@ -60,7 +60,10 @@ try:
     )
 
     result = response.choices[0].message.content.strip()
-    parsed_result = json.loads(result)
+    cleaned_result = result.strip("` \n")
+    if cleaned_result.startswith("json"):
+        cleaned_result = cleaned_result[len("json"):].strip()
+    parsed_result = json.loads(cleaned_result)
 
     print("\nOperator Evaluation Report:")
     print(f"Compliance Score: {parsed_result['compliance_score']}/100")
