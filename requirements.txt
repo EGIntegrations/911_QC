@@ -1,5 +1,5 @@
 openai
-whisper
+openai-whisper
 pyannote.audio
 torch
 transformers
