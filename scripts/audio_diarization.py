@@ -4,7 +4,6 @@ ffmpeg_path = os.path.join("bin", "ffmpeg")
 if os.path.isfile(ffmpeg_path):
     os.environ["PATH"] = f"{os.path.abspath('bin')}:" + os.environ["PATH"]
     print(f"Using bundled ffmpeg from: {ffmpeg_path}")
-import whisper
 from pyannote.audio import Pipeline
 import torch
 import json
@@ -15,9 +14,19 @@ try:
     print("Checking if ffmpeg is installed...")
     if os.system("ffmpeg -version") != 0:
         raise EnvironmentError("ffmpeg is not installed or not found in PATH. Using bundled version failed.")
-    print("Loading Whisper model...")
-    # Load Whisper model
-    model = whisper.load_model("tiny", device="cpu")
+    print("Transcribing audio with OpenAI Whisper API...")
+    import openai
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    # Define audio file (your recorded file)
+    audio_file = "data/audio_files/temp_audio.wav"
+
+    with open(audio_file, "rb") as audio_file_obj:
+        transcript_result = openai.Audio.transcribe(
+            model="whisper-1",
+            file=audio_file_obj
+        )
+    transcript_text = transcript_result["text"]
 
     print("Loading Pyannote diarization pipeline...")
     # Load Pyannote pipeline for diarization (using your READ token)
@@ -27,12 +36,6 @@ try:
         use_auth_token=HUGGINGFACE_TOKEN
     )
 
-    # Define audio file (your recorded file)
-    audio_file = "data/audio_files/temp_audio.wav"
-
-    print("Transcribing audio with Whisper...")
-    # Perform Whisper transcription
-    transcript_result = model.transcribe(audio_file)
 
     print("Running speaker diarization...")
     # Perform Pyannote diarization
@@ -47,24 +50,19 @@ try:
         start_time = round(segment.start, 2)
         end_time = round(segment.end, 2)
 
-        # Extract corresponding Whisper transcript segment
-        segment_transcript = ""
-        for whisper_segment in transcript_result["segments"]:
-            if whisper_segment["start"] >= segment.start and whisper_segment["end"] <= segment.end:
-                segment_transcript += whisper_segment["text"].strip() + " "
+        # For now, use the full transcript_text for each segment
+        segment_transcript = transcript_text.strip()
 
-        print(f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript.strip()}")
+        print(f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript}")
 
     # Save full transcript for later use
     diarized_transcript = ""
     for segment, _, speaker in diarization_result.itertracks(yield_label=True):
         start_time = round(segment.start, 2)
         end_time = round(segment.end, 2)
-        segment_transcript = ""
-        for whisper_segment in transcript_result["segments"]:
-            if whisper_segment["start"] >= segment.start and whisper_segment["end"] <= segment.end:
-                segment_transcript += whisper_segment["text"].strip() + " "
-        diarized_transcript += f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript.strip()}\n"
+        # For now, use the full transcript_text for each segment
+        segment_transcript = transcript_text.strip()
+        diarized_transcript += f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript}\n"
 
     print("Saving transcript to JSON...")
     # Make sure the directory exists
