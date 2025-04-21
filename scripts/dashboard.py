@@ -1,11 +1,20 @@
 import streamlit as st
 import os
 import json
-if os.getenv("STREAMLIT_CLOUD") != "true":
-    import sounddevice as sd
-    from scipy.io.wavfile import write
-else:
-    st.warning("🎤 Mic recording is only supported locally.")
+# Only attempt mic recording when not on Streamlit Cloud
+import os as _os_import
+try:
+    if _os_import.getenv("STREAMLIT_CLOUD") != "true":
+        import sounddevice as sd
+        from scipy.io.wavfile import write
+    else:
+        sd = None
+        write = None
+        st.warning("🎤 Mic recording is only supported locally.")
+except ImportError:
+    sd = None
+    write = None
+    st.warning("🎤 Mic recording libraries unavailable.")
 import subprocess
 from dotenv import load_dotenv
 load_dotenv()
