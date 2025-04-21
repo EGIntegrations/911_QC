@@ -4,6 +4,10 @@ from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
+# Path to the diarized transcript JSON
+TRANSCRIPT_PATH = os.path.join("data", "transcripts", "diarized_transcript.json")
+print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
+
 # Retrieve your OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
@@ -13,9 +17,10 @@ if not openai_api_key:
 client = OpenAI(api_key=openai_api_key)
 
 # Load actual transcript
-with open("data/transcripts/diarized_transcript.json", "r") as f:
+with open(TRANSCRIPT_PATH, "r") as f:
     transcript_data = json.load(f)
-    transcript_text = transcript_data.get("transcript", "")
+transcript_text = transcript_data.get("transcript", "")
+print("DEBUG: First 200 characters of transcript_text:", transcript_text[:200])
 
 # Define categories
 categories = ["Fire", "Medical", "Domestic Abuse", "Homicide", "Kidnapping", "Robbery", "Other"]
