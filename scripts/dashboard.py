@@ -32,6 +32,7 @@ if uploaded_file:
 
     # Save uploaded file to correct location
     temp_path = "data/audio_files/temp_audio.wav"
+    os.makedirs(os.path.dirname(temp_path), exist_ok=True)
     with open(temp_path, "wb") as f:
         f.write(uploaded_file.read())
 
