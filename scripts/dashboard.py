@@ -1,5 +1,7 @@
 import streamlit as st
-st.set_page_config(page_title="911 Call AI Monitoring Dashboard", layout="centered")
+import sys
+set_page = st.set_page_config
+set_page(page_title="911 Call AI Monitoring Dashboard", layout="centered")
 
 import os
 import json
@@ -37,9 +39,9 @@ if uploaded_file:
         f.write(uploaded_file.read())
 
     # Run the pipeline scripts
-    os.system("python3 scripts/audio_diarization.py")
-    os.system("python3 scripts/categorize_call.py")
-    os.system("python3 scripts/evaluate_operator.py")
+    subprocess.run([sys.executable, "scripts/audio_diarization.py"], check=True)
+    subprocess.run([sys.executable, "scripts/categorize_call.py"], check=True)
+    subprocess.run([sys.executable, "scripts/evaluate_operator.py"], check=True)
 
     # Display the outputs
     try:
