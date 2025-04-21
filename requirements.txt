@@ -9,3 +9,4 @@ pydub
 requests
 ffmpeg-python
 scipy
+python-dotenv
