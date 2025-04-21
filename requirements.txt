@@ -9,4 +9,3 @@ pydub
 requests
 ffmpeg-python
 scipy
-portaudio
