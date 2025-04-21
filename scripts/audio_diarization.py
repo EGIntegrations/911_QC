@@ -1,4 +1,7 @@
 import os
+# Extend PATH to include local ffmpeg binary
+ffmpeg_path = os.path.abspath("bin")
+os.environ["PATH"] += os.pathsep + ffmpeg_path
 import whisper
 from pyannote.audio import Pipeline
 import torch
