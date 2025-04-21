@@ -12,11 +12,10 @@ if not openai_api_key:
 # Initialize OpenAI client
 client = OpenAI(api_key=openai_api_key)
 
-# Example transcript (Replace this with actual transcriptions)
-transcript_text = """
-Operator: 911, what's your emergency?
-Caller: Help, my house is on fire! I can't get out!
-"""
+# Load actual transcript
+with open("data/transcripts/diarized_transcript.json", "r") as f:
+    transcript_data = json.load(f)
+    transcript_text = transcript_data.get("transcript", "")
 
 # Define categories
 categories = ["Fire", "Medical", "Domestic Abuse", "Homicide", "Kidnapping", "Robbery", "Other"]
