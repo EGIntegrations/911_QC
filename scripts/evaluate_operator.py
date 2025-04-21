@@ -21,7 +21,6 @@ if not os.path.exists("data/operator_script.json"):
                 "Help is on the way."
             ]
         }, f, indent=2)
-c
 # Load the expected operator script
 with open("data/operator_script.json", "r") as f:
     expected_script = json.load(f)
