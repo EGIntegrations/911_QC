@@ -8,6 +8,20 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
+# Check if expected operator script exists
+if not os.path.exists("data/operator_script.json"):
+    print("⚠️ operator_script.json not found. Creating a default one...")
+    os.makedirs("data", exist_ok=True)
+    with open("data/operator_script.json", "w") as f:
+        json.dump({
+            "script": [
+                "911, what is your emergency?",
+                "Can I have your location?",
+                "Is anyone injured?",
+                "Help is on the way."
+            ]
+        }, f, indent=2)
+
 # Load the expected operator script
 with open("data/operator_script.json", "r") as f:
     expected_script = json.load(f)
@@ -54,7 +68,7 @@ try:
 
     # Store results
     with open("data/operator_evaluation.json", "w") as f:
-        json.dump(json.loads(response.choices[0].message.content), f, indent=2)
+        json.dump(parsed_result, f, indent=4)
 
 except json.JSONDecodeError as e:
     print("Failed to decode JSON:", e)
