@@ -1,22 +1,28 @@
-import os
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
-load_dotenv()
+from pathlib import Path
 
-# Path to the diarized transcript JSON
-TRANSCRIPT_PATH = os.path.join("data", "transcripts", "diarized_transcript.json")
+# Compute project root and data directories
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+SCRIPT_PATH = DATA_DIR / "operator_script.json"
+TRANSCRIPT_PATH = DATA_DIR / "transcripts" / "diarized_transcript.json"
+EVALUATION_OUTPUT_PATH = DATA_DIR / "operator_evaluation.json"
+
 print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
+
+load_dotenv()
 
 # Load OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
 # Check if expected operator script exists
-if not os.path.exists("data/operator_script.json"):
+if not SCRIPT_PATH.exists():
     print("⚠️ operator_script.json not found. Creating a default one...")
-    os.makedirs("data", exist_ok=True)
-    with open("data/operator_script.json", "w") as f:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    with open(SCRIPT_PATH, "w") as f:
         json.dump({
             "script": [
                 "911, what is your emergency?",
@@ -26,12 +32,12 @@ if not os.path.exists("data/operator_script.json"):
             ]
         }, f, indent=2)
 # Load the expected operator script
-with open("data/operator_script.json", "r") as f:
+with open(SCRIPT_PATH, "r") as f:
     expected_script = json.load(f)
 print("DEBUG: Expected operator steps:", expected_script.get("script", []))
 
 # Ensure the transcripts directory exists
-os.makedirs(os.path.dirname(TRANSCRIPT_PATH), exist_ok=True)
+(TRANSCRIPT_PATH.parent).mkdir(parents=True, exist_ok=True)
 
 # Load and debug-print the actual transcript
 with open(TRANSCRIPT_PATH, "r") as f:
@@ -78,7 +84,7 @@ try:
     print(f"Feedback: {parsed_result['feedback']}")
 
     # Store results
-    with open("data/operator_evaluation.json", "w") as f:
+    with open(EVALUATION_OUTPUT_PATH, "w") as f:
         json.dump(parsed_result, f, indent=4)
 
 except json.JSONDecodeError as e:
