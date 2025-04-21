@@ -38,9 +38,26 @@ if uploaded_file:
         f.write(uploaded_file.read())
 
     # Run the pipeline scripts
-    subprocess.run([sys.executable, "scripts/audio_diarization.py"], check=True)
-    subprocess.run([sys.executable, "scripts/categorize_call.py"], check=True)
-    subprocess.run([sys.executable, "scripts/evaluate_operator.py"], check=True)
+    try:
+        result = subprocess.run([sys.executable, "scripts/audio_diarization.py"], check=True, capture_output=True, text=True)
+        st.info("✅ Diarization completed")
+        st.text(result.stdout)
+    except Exception as e:
+        st.error(f"❌ Diarization failed: {e}")
+
+    try:
+        result = subprocess.run([sys.executable, "scripts/categorize_call.py"], check=True, capture_output=True, text=True)
+        st.info("✅ Categorization completed")
+        st.text(result.stdout)
+    except Exception as e:
+        st.error(f"❌ Categorization failed: {e}")
+
+    try:
+        result = subprocess.run([sys.executable, "scripts/evaluate_operator.py"], check=True, capture_output=True, text=True)
+        st.info("✅ Operator evaluation completed")
+        st.text(result.stdout)
+    except Exception as e:
+        st.error(f"❌ Operator evaluation failed: {e}")
 
     # Display the outputs
     try:
