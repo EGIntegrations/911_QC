@@ -69,6 +69,7 @@ try:
     print("Saving transcript to JSON...")
     # Make sure the directory exists
     os.makedirs("data/transcripts", exist_ok=True)
+    os.makedirs(os.path.dirname("data/transcripts/diarized_transcript.json"), exist_ok=True)
     # Save to JSON
     with open("data/transcripts/diarized_transcript.json", "w") as f:
         json.dump({"transcript": diarized_transcript}, f, indent=2)
