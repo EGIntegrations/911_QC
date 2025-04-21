@@ -55,14 +55,10 @@ Expected Call Flow:
 Actual Call Transcript:
 {transcribed_call}
 
-Provide a JSON response with a compliance score (0-100), a list of missing steps, and feedback on how well the operator followed the script. 
-
-Respond in JSON format:
-{{
-    "compliance_score": 90,
-    "missing_steps": ["nature_of_emergency"],
-    "feedback": "The operator did not ask for the nature of the emergency."
-}}
+Respond only in JSON format using the following keys:
+- "compliance_score": A number between 0 and 100
+- "missing_steps": A list of SOP steps the operator missed
+- "feedback": A brief explanation of what the operator did or didn’t do well
 """
 
 try:
