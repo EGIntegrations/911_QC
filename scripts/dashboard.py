@@ -39,25 +39,46 @@ if uploaded_file:
 
     # Run the pipeline scripts
     try:
-        result = subprocess.run([sys.executable, "scripts/audio_diarization.py"], check=True, capture_output=True, text=True)
+        st.info("🔊 Running audio_diarization.py...")
+        result = subprocess.run(
+            [sys.executable, "scripts/audio_diarization.py"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
         st.info("✅ Diarization completed")
-        st.text(result.stdout)
-    except Exception as e:
-        st.error(f"❌ Diarization failed: {e}")
+        st.code(result.stdout)
+    except subprocess.CalledProcessError as e:
+        st.error("❌ Diarization failed.")
+        st.code(e.stderr)
 
     try:
-        result = subprocess.run([sys.executable, "scripts/categorize_call.py"], check=True, capture_output=True, text=True)
+        st.info("📂 Running categorize_call.py...")
+        result = subprocess.run(
+            [sys.executable, "scripts/categorize_call.py"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
         st.info("✅ Categorization completed")
-        st.text(result.stdout)
-    except Exception as e:
-        st.error(f"❌ Categorization failed: {e}")
+        st.code(result.stdout)
+    except subprocess.CalledProcessError as e:
+        st.error("❌ Categorization failed.")
+        st.code(e.stderr)
 
     try:
-        result = subprocess.run([sys.executable, "scripts/evaluate_operator.py"], check=True, capture_output=True, text=True)
+        st.info("🧑‍💻 Running evaluate_operator.py...")
+        result = subprocess.run(
+            [sys.executable, "scripts/evaluate_operator.py"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
         st.info("✅ Operator evaluation completed")
-        st.text(result.stdout)
-    except Exception as e:
-        st.error(f"❌ Operator evaluation failed: {e}")
+        st.code(result.stdout)
+    except subprocess.CalledProcessError as e:
+        st.error("❌ Operator evaluation failed.")
+        st.code(e.stderr)
 
     # Display the outputs
     try:
