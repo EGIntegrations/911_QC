@@ -2,6 +2,7 @@ import os
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
+import re
 load_dotenv()
 
 # Path to the diarized transcript JSON
@@ -19,7 +20,19 @@ client = OpenAI(api_key=openai_api_key)
 # Load actual transcript
 with open(TRANSCRIPT_PATH, "r") as f:
     transcript_data = json.load(f)
-transcript_text = transcript_data.get("transcript", "")
+raw = transcript_data.get("transcript", "")
+
+# If it's a list of segments, join their 'text' fields
+if isinstance(raw, list):
+    transcript_text = " ".join(seg.get("text", "") for seg in raw)
+
+# If it's one big string with speaker labels, strip them out
+elif isinstance(raw, str):
+    transcript_text = re.sub(r"\[.*?\]\s*\(\d+\.\d+s?\s*-\s*\d+\.\d+s?\):\s*", "", raw)
+
+else:
+    transcript_text = ""
+
 print("DEBUG: First 200 characters of transcript_text:", transcript_text[:200])
 
 # Define categories
