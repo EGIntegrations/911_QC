@@ -22,12 +22,14 @@ try:
     audio_file = "data/audio_files/temp_audio.wav"
 
     with open(audio_file, "rb") as audio_file_obj:
-        # Use new audio endpoint in openai>=1.0
-        transcript_response = openai.audio.transcribe(
-            model="whisper-1",
-            file=audio_file_obj
+        # Use new v1+ endpoint for Whisper transcriptions
+        response = openai.Audio.transcriptions.create(
+            file=audio_file_obj,
+            model="whisper-1"
         )
-    transcript_text = transcript_response["text"]
+    transcript_text = response.get("text")
+    if not transcript_text:
+        raise RuntimeError("Whisper transcription returned no text.")
 
     print("Loading Pyannote diarization pipeline...")
     # Load Pyannote pipeline for diarization (using your READ token)
