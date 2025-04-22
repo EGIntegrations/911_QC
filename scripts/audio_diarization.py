@@ -16,14 +16,15 @@ try:
         raise EnvironmentError("ffmpeg is not installed or not found in PATH. Using bundled version failed.")
     print("Transcribing audio with OpenAI Whisper API...")
     import openai
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     # Define audio file (your recorded file)
     audio_file = "data/audio_files/temp_audio.wav"
 
     with open(audio_file, "rb") as audio_file_obj:
         # Transcribe audio using the new Audio.transcriptions endpoint
-        response = openai.Audio.transcriptions.create(
+        response = client.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file_obj
         )
