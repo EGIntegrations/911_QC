@@ -5,9 +5,15 @@ from dotenv import load_dotenv
 import re
 load_dotenv()
 
-TRANSCRIPT_PATH = "data/transcripts/diarized_transcript.json"
-if not os.path.exists(TRANSCRIPT_PATH):
-    raise FileNotFoundError(f"Transcript file not found at: {TRANSCRIPT_PATH}")
+# Define absolute paths for data directories
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+TRANSCRIPT_PATH = os.path.join(DATA_DIR, "transcripts", "diarized_transcript.json")
+CATEGORIZED_DIR = os.path.join(DATA_DIR, "categorized_calls")
+# Ensure directories exist
+os.makedirs(os.path.dirname(TRANSCRIPT_PATH), exist_ok=True)
+os.makedirs(CATEGORIZED_DIR, exist_ok=True)
 
 # Retrieve your OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -79,6 +85,5 @@ except json.JSONDecodeError as e:
 except Exception as e:
     print("An error occurred:", e)
 
-os.makedirs("data/categorized_calls", exist_ok=True)
-with open("data/categorized_calls/call_category.json", "w") as f:
+with open(os.path.join(CATEGORIZED_DIR, "call_category.json"), "w") as f:
     json.dump(parsed_result, f, indent=2)
