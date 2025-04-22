@@ -22,7 +22,7 @@ try:
     audio_file = "data/audio_files/temp_audio.wav"
 
     with open(audio_file, "rb") as audio_file_obj:
-        transcript_result = openai.Audio.transcribe(
+        transcript_result = openai.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file_obj
         )
@@ -56,6 +56,7 @@ try:
         print(f"[{speaker}] ({start_time}s - {end_time}s): {segment_transcript}")
 
     # Save full transcript for later use
+    print("Saving JSON to: data/transcripts/diarized_transcript.json")
     diarized_transcript = ""
     for segment, _, speaker in diarization_result.itertracks(yield_label=True):
         start_time = round(segment.start, 2)
@@ -68,6 +69,7 @@ try:
     # Make sure the directory exists
     os.makedirs("data/transcripts", exist_ok=True)
     # Save to JSON
+    print(f"Saved transcript file size: {os.path.getsize('data/transcripts/diarized_transcript.json')} bytes")
     with open("data/transcripts/diarized_transcript.json", "w") as f:
         json.dump({"transcript": diarized_transcript}, f, indent=2)
 
