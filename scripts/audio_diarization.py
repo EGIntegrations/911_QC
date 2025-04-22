@@ -22,8 +22,8 @@ try:
     audio_file = "data/audio_files/temp_audio.wav"
 
     with open(audio_file, "rb") as audio_file_obj:
-        # Transcribe audio using the new Audio.transcribe endpoint
-        response = openai.Audio.transcribe(
+        # Transcribe audio using the new Audio.transcriptions endpoint
+        response = openai.Audio.transcriptions.create(
             model="whisper-1",
             file=audio_file_obj
         )
@@ -47,7 +47,7 @@ try:
     print("Building diarized transcript output...")
     # Print diarization results
     print("Speaker-differentiated Transcript:\n")
-    
+
     for segment, _, speaker in diarization_result.itertracks(yield_label=True):
         # Extract timestamp
         start_time = round(segment.start, 2)
