@@ -4,16 +4,17 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
-TRANSCRIPT_PATH = "data/transcripts/diarized_transcript.json"
-if not os.path.exists(TRANSCRIPT_PATH):
-    raise FileNotFoundError(f"Transcript file not found at: {TRANSCRIPT_PATH}")
+# Define absolute project and data paths
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+SCRIPT_PATH = os.path.join(DATA_DIR, "operator_script.json")
+TRANSCRIPT_PATH = os.path.join(DATA_DIR, "transcripts", "diarized_transcript.json")
+EVALUATION_OUTPUT_PATH = os.path.join(DATA_DIR, "operator_evaluation.json")
 
-# Compute project root and data directories
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-SCRIPT_PATH = DATA_DIR / "operator_script.json"
-TRANSCRIPT_PATH = DATA_DIR / "transcripts" / "diarized_transcript.json"
-EVALUATION_OUTPUT_PATH = DATA_DIR / "operator_evaluation.json"
+# Ensure necessary directories exist
+os.makedirs(os.path.dirname(TRANSCRIPT_PATH), exist_ok=True)
+os.makedirs(os.path.dirname(EVALUATION_OUTPUT_PATH), exist_ok=True)
 
 print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
 
@@ -24,9 +25,9 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
 # Check if expected operator script exists
-if not SCRIPT_PATH.exists():
+if not os.path.exists(SCRIPT_PATH):
     print("⚠️ operator_script.json not found. Creating a default one...")
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok=True)
     with open(SCRIPT_PATH, "w") as f:
         json.dump({
             "script": [
@@ -40,9 +41,6 @@ if not SCRIPT_PATH.exists():
 with open(SCRIPT_PATH, "r") as f:
     expected_script = json.load(f)
 print("DEBUG: Expected operator steps:", expected_script.get("script", []))
-
-# Ensure the transcripts directory exists
-(TRANSCRIPT_PATH.parent).mkdir(parents=True, exist_ok=True)
 
 # Load and debug-print the actual transcript
 with open(TRANSCRIPT_PATH, "r") as f:
