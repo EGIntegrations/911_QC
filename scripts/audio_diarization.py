@@ -28,7 +28,7 @@ try:
             model="whisper-1",
             file=audio_file_obj
         )
-        transcript_text = response["text"]
+        transcript_text = response.text 
     if not transcript_text:
         raise RuntimeError("Whisper transcription returned no text.")
 
