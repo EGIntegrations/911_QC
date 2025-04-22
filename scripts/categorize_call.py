@@ -1,6 +1,6 @@
 import os
 import json
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 import re
 from typing import Any
@@ -21,8 +21,8 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
     raise ValueError("OPENAI_API_KEY is not set.")
 
-# Initialize OpenAI client
-openai.api_key = openai_api_key
+# Initialize OpenAI client for the new 1.x SDK
+client = OpenAI(api_key=openai_api_key)
 
 # Load actual transcript
 with open(TRANSCRIPT_PATH, "r") as f:
@@ -61,7 +61,7 @@ messages = [
 parsed_result = {}
 try:
     # API Call to OpenAI
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=messages,
         temperature=0.0,
