@@ -1,6 +1,6 @@
 import os
 import json
-from openai import OpenAI
+import openai
 from dotenv import load_dotenv
 import re
 load_dotenv()
@@ -21,7 +21,7 @@ if not openai_api_key:
     raise ValueError("OPENAI_API_KEY is not set.")
 
 # Initialize OpenAI client
-client = OpenAI(api_key=openai_api_key)
+openai.api_key = openai_api_key
 
 # Load actual transcript
 with open(TRANSCRIPT_PATH, "r") as f:
@@ -59,7 +59,7 @@ messages = [
 
 try:
     # API Call to OpenAI
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=messages,
         temperature=0.0,
