@@ -26,7 +26,7 @@ try:
             model="whisper-1",
             file=audio_file_obj
         ).model_dump()
-    transcript_text = transcript_result["text"]
+    transcript_text = transcript_result.text
 
     print("Loading Pyannote diarization pipeline...")
     # Load Pyannote pipeline for diarization (using your READ token)
