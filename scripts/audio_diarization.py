@@ -22,12 +22,12 @@ try:
     audio_file = "data/audio_files/temp_audio.wav"
 
     with open(audio_file, "rb") as audio_file_obj:
-        # Use new v1+ endpoint for Whisper transcriptions
-        response = openai.Audio.transcriptions.create(
-            file=audio_file_obj,
-            model="whisper-1"
+        # Transcribe audio using the new Audio.transcribe endpoint
+        response = openai.Audio.transcribe(
+            model="whisper-1",
+            file=audio_file_obj
         )
-    transcript_text = response.get("text")
+        transcript_text = response["text"]
     if not transcript_text:
         raise RuntimeError("Whisper transcription returned no text.")
 
