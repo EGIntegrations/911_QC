@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 import re
 load_dotenv()
 
-# Path to the diarized transcript JSON
-TRANSCRIPT_PATH = os.path.join("data", "transcripts", "diarized_transcript.json")
-print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
+TRANSCRIPT_PATH = "data/transcripts/diarized_transcript.json"
+if not os.path.exists(TRANSCRIPT_PATH):
+    raise FileNotFoundError(f"Transcript file not found at: {TRANSCRIPT_PATH}")
 
 # Retrieve your OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
