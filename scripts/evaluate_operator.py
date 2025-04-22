@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
+TRANSCRIPT_PATH = "data/transcripts/diarized_transcript.json"
+if not os.path.exists(TRANSCRIPT_PATH):
+    raise FileNotFoundError(f"Transcript file not found at: {TRANSCRIPT_PATH}")
+
 # Compute project root and data directories
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
