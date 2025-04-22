@@ -26,7 +26,8 @@ client = OpenAI(api_key=openai_api_key)
 # Load actual transcript
 with open(TRANSCRIPT_PATH, "r") as f:
     transcript_data = json.load(f)
-raw = transcript_data.get("transcript", "")
+ # Support both "transcript" and "text" fields
+raw = transcript_data.get("transcript") or transcript_data.get("text", "")
 
 # If it's a list of segments, join their 'text' fields
 if isinstance(raw, list):
