@@ -41,9 +41,12 @@ wf.setframerate(RATE)
 wf.writeframes(b''.join(frames))
 wf.close()
 
-# Transcribe audio using OpenAI Whisper API
+# Transcribe audio using OpenAI Whisper API (v1+)
 print("Transcribing with OpenAI whisper-1...")
 with open(AUDIO_OUTPUT_FILENAME, "rb") as audio_file:
-    response = openai.Audio.transcribe(model="whisper-1", file=audio_file)
+    response = openai.Audio.transcriptions.create(
+        file=audio_file,
+        model="whisper-1"
+    )
 print("\nTranscription:")
-print(response["text"])
+print(response.get("text"))
