@@ -3,6 +3,7 @@ import json
 import openai
 from dotenv import load_dotenv
 import re
+from typing import Any
 load_dotenv()
 
 # Define absolute paths for data directories
@@ -57,6 +58,7 @@ messages = [
     }
 ]
 
+parsed_result = {}
 try:
     # API Call to OpenAI
     response = openai.ChatCompletion.create(
@@ -79,12 +81,16 @@ try:
     print(f"Category: {parsed_result['category']}")
     print(f"Reasoning: {parsed_result['reasoning']}")
 
+    # Persist result
+    with open(os.path.join(CATEGORIZED_DIR, "call_category.json"), "w") as f:
+        json.dump(parsed_result, f, indent=2)
+
 except json.JSONDecodeError as e:
     print("Failed to decode JSON:", e)
     print("Raw output from API:", result)
+    # Save raw result for debugging
+    with open(os.path.join(CATEGORIZED_DIR, "call_category.json"), "w") as f:
+        f.write(result)
 
 except Exception as e:
     print("An error occurred:", e)
-
-with open(os.path.join(CATEGORIZED_DIR, "call_category.json"), "w") as f:
-    json.dump(parsed_result, f, indent=2)
