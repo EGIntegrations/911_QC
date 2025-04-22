@@ -22,10 +22,10 @@ try:
     audio_file = "data/audio_files/temp_audio.wav"
 
     with open(audio_file, "rb") as audio_file_obj:
-        transcript_result = openai.audio.transcriptions.create(
+        transcript_result = openai.Audio.transcribe(
             model="whisper-1",
             file=audio_file_obj
-        )
+        ).model_dump()
     transcript_text = transcript_result["text"]
 
     print("Loading Pyannote diarization pipeline...")
@@ -69,9 +69,9 @@ try:
     # Make sure the directory exists
     os.makedirs("data/transcripts", exist_ok=True)
     # Save to JSON
-    print(f"Saved transcript file size: {os.path.getsize('data/transcripts/diarized_transcript.json')} bytes")
     with open("data/transcripts/diarized_transcript.json", "w") as f:
         json.dump({"transcript": diarized_transcript}, f, indent=2)
+    print(f"Saved transcript file size: {os.path.getsize('data/transcripts/diarized_transcript.json')} bytes")
 
     print("audio_diarization.py completed successfully.")
 except Exception as e:
