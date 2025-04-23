@@ -9,16 +9,20 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 SCRIPT_PATH = os.path.join(DATA_DIR, "operator_script.json")
-TRANSCRIPT_PATH = os.path.join(DATA_DIR, "transcripts", "diarized_transcript.json")
-EVALUATION_OUTPUT_PATH = os.path.join(DATA_DIR, "operator_evaluation.json")
-
-# Ensure necessary directories exist
-os.makedirs(os.path.dirname(TRANSCRIPT_PATH), exist_ok=True)
-os.makedirs(os.path.dirname(EVALUATION_OUTPUT_PATH), exist_ok=True)
-
-print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
 
 load_dotenv()
+
+station_id = os.getenv("STATION_ID", "UnassignedStation")
+STATION_DATA_DIR = os.path.join(DATA_DIR, station_id)
+TRANSCRIPT_PATH = os.path.join(STATION_DATA_DIR, "transcripts", "diarized_transcript.json")
+EVALUATION_OUTPUT_PATH = os.path.join(STATION_DATA_DIR, "operator_evaluation", "evaluation.json")
+FLAGGED_LOG_PATH = os.path.join(STATION_DATA_DIR, "operator_evaluation", "flagged_operator_reviews.json")
+
+# Ensure necessary directories exist
+os.makedirs(os.path.join(STATION_DATA_DIR, "transcripts"), exist_ok=True)
+os.makedirs(os.path.join(STATION_DATA_DIR, "operator_evaluation"), exist_ok=True)
+
+print(f"DEBUG: Loading transcript from {TRANSCRIPT_PATH}")
 
 # Load OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -87,7 +91,6 @@ try:
         json.dump(parsed_result, f, indent=4)
 
     # Additional logic for compliance flagging
-    FLAGGED_LOG_PATH = os.path.join(DATA_DIR, "flagged_operator_reviews.json")
     FLAGGED_THRESHOLD = 50
 
     if parsed_result["compliance_score"] < FLAGGED_THRESHOLD:
