@@ -86,6 +86,32 @@ try:
     with open(EVALUATION_OUTPUT_PATH, "w") as f:
         json.dump(parsed_result, f, indent=4)
 
+    # Additional logic for compliance flagging
+    FLAGGED_LOG_PATH = os.path.join(DATA_DIR, "flagged_operator_reviews.json")
+    FLAGGED_THRESHOLD = 50
+
+    if parsed_result["compliance_score"] < FLAGGED_THRESHOLD:
+        print("⚠️ Compliance score below threshold. Flagging for review.")
+        flagged_entry = {
+            "score": parsed_result["compliance_score"],
+            "missing_steps": parsed_result["missing_steps"],
+            "feedback": parsed_result["feedback"],
+            "transcript_excerpt": transcribed_call[:200]
+        }
+        try:
+            if os.path.exists(FLAGGED_LOG_PATH):
+                with open(FLAGGED_LOG_PATH, "r") as f:
+                    flagged_data = json.load(f)
+            else:
+                flagged_data = []
+
+            flagged_data.append(flagged_entry)
+
+            with open(FLAGGED_LOG_PATH, "w") as f:
+                json.dump(flagged_data, f, indent=2)
+        except Exception as e:
+            print("Failed to log flagged entry:", e)
+
 except json.JSONDecodeError as e:
     print("Failed to decode JSON:", e)
     print("Raw output from API:", result)
