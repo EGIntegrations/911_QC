@@ -10,10 +10,13 @@ load_dotenv()
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-TRANSCRIPT_PATH = os.path.join(DATA_DIR, "transcripts", "diarized_transcript.json")
-CATEGORIZED_DIR = os.path.join(DATA_DIR, "categorized_calls")
+
+station_id = os.getenv("STATION_ID", "UnassignedStation")
+STATION_DATA_DIR = os.path.join(DATA_DIR, station_id)
+TRANSCRIPT_PATH = os.path.join(STATION_DATA_DIR, "transcripts", "diarized_transcript.json")
+CATEGORIZED_DIR = os.path.join(STATION_DATA_DIR, "categorized_calls")
 # Ensure directories exist
-os.makedirs(os.path.dirname(TRANSCRIPT_PATH), exist_ok=True)
+os.makedirs(os.path.join(STATION_DATA_DIR, "transcripts"), exist_ok=True)
 os.makedirs(CATEGORIZED_DIR, exist_ok=True)
 
 # Retrieve your OpenAI API key
@@ -100,7 +103,7 @@ try:
 
     # If keywords were found, persist a copy into a high‑priority queue
     if keywords_found:
-        HIGH_PRIORITY_DIR = os.path.join(DATA_DIR, "high_priority_queue")
+        HIGH_PRIORITY_DIR = os.path.join(STATION_DATA_DIR, "high_priority_queue")
         os.makedirs(HIGH_PRIORITY_DIR, exist_ok=True)
         with open(os.path.join(HIGH_PRIORITY_DIR, "flagged_call.json"), "w") as hp_file:
             json.dump(parsed_result, hp_file, indent=2)
