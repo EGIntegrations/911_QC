@@ -2,6 +2,12 @@ import os
 import subprocess
 import json
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+
+station_id = os.getenv("STATION_ID", "UnassignedStation")
+STATION_DATA_DIR = os.path.join("data", station_id)
+os.makedirs(STATION_DATA_DIR, exist_ok=True)
 
 # Paths to scripts
 AUDIO_CAPTURE_SCRIPT = "scripts/audio_capture.py"
@@ -11,9 +17,9 @@ EVALUATION_SCRIPT = "scripts/evaluate_operator.py"
 
 # Output files
 AUDIO_FILE = "temp_audio.wav"
-DIARIZED_FILE = "data/diarized_transcript.json"
-CATEGORY_FILE = "data/call_category.json"
-EVALUATION_FILE = "data/operator_evaluation.json"
+DIARIZED_FILE = os.path.join(STATION_DATA_DIR, "transcripts", "diarized_transcript.json")
+CATEGORY_FILE = os.path.join(STATION_DATA_DIR, "categorized_calls", "call_category.json")
+EVALUATION_FILE = os.path.join(STATION_DATA_DIR, "operator_evaluation", "evaluation.json")
 
 def run_script(script):
     """Runs a script using subprocess and returns its output."""
@@ -36,6 +42,11 @@ category_output = run_script(CATEGORIZATION_SCRIPT)
 
 # Step 4: Evaluate Operator Performance
 evaluation_output = run_script(EVALUATION_SCRIPT)
+
+# Ensure directories exist before loading or saving files
+os.makedirs(os.path.dirname(DIARIZED_FILE), exist_ok=True)
+os.makedirs(os.path.dirname(CATEGORY_FILE), exist_ok=True)
+os.makedirs(os.path.dirname(EVALUATION_FILE), exist_ok=True)
 
 # Load Results
 try:
@@ -66,7 +77,7 @@ call_metadata = {
 }
 
 # Store in separate summary log
-FLAGGED_SUMMARY_FILE = "data/flagged_summary.json"
+FLAGGED_SUMMARY_FILE = os.path.join(STATION_DATA_DIR, "flagged_summary.json")
 try:
     if os.path.exists(FLAGGED_SUMMARY_FILE):
         with open(FLAGGED_SUMMARY_FILE, "r") as f:
@@ -89,7 +100,7 @@ final_result = {
 }
 
 # Save final results
-FINAL_OUTPUT_FILE = "data/final_911_report.json"
+FINAL_OUTPUT_FILE = os.path.join(STATION_DATA_DIR, "final_911_report.json")
 with open(FINAL_OUTPUT_FILE, "w") as f:
     json.dump(final_result, f, indent=4)
 
