@@ -1,6 +1,7 @@
 import os
 import subprocess
 import json
+from datetime import datetime
 
 # Paths to scripts
 AUDIO_CAPTURE_SCRIPT = "scripts/audio_capture.py"
@@ -49,10 +50,42 @@ try:
 except:
     evaluation_data = {}
 
+# Determine priority and compliance flags
+high_priority = category_data.get("high_priority", False)
+keywords_found = category_data.get("keywords_found", [])
+compliance_score = evaluation_data.get("compliance_score", 100)
+operator_flagged = compliance_score < 50
+
+# Create metadata structure
+call_metadata = {
+    "timestamp": datetime.utcnow().isoformat() + "Z",
+    "high_priority": high_priority,
+    "keywords_found": keywords_found,
+    "compliance_score": compliance_score,
+    "operator_flagged": operator_flagged
+}
+
+# Store in separate summary log
+FLAGGED_SUMMARY_FILE = "data/flagged_summary.json"
+try:
+    if os.path.exists(FLAGGED_SUMMARY_FILE):
+        with open(FLAGGED_SUMMARY_FILE, "r") as f:
+            summary_data = json.load(f)
+    else:
+        summary_data = []
+
+    summary_data.append(call_metadata)
+
+    with open(FLAGGED_SUMMARY_FILE, "w") as f:
+        json.dump(summary_data, f, indent=2)
+except Exception as e:
+    print("⚠️ Failed to update flagged_summary.json:", e)
+
 # Final Output
 final_result = {
     "call_category": category_data,
-    "operator_evaluation": evaluation_data
+    "operator_evaluation": evaluation_data,
+    "summary": call_metadata
 }
 
 # Save final results
