@@ -41,10 +41,19 @@ elif isinstance(raw, str):
 else:
     transcript_text = ""
 
+# Check for high‑priority keywords
+keywords_found: list[str] = [
+    kw for kw in KEYWORDS if re.search(rf"\b{re.escape(kw)}\b", transcript_text, re.IGNORECASE)
+]
+
 print("DEBUG: First 200 characters of transcript_text:", transcript_text[:200])
 
 # Define categories
 categories = ["Fire", "Medical", "Domestic Abuse", "Homicide", "Kidnapping", "Robbery", "Other"]
+
+# Keywords that should trigger high‑priority escalation
+KEYWORDS = ["gun", "weapon", "knife", "firearm", "shoot", "shooting",
+            "explosive", "bomb", "hostage", "kidnap", "abduct"]
 
 # Construct the messages for GPT-4o-mini
 messages = [
@@ -77,6 +86,10 @@ try:
     # Parse JSON safely
     parsed_result = json.loads(result)
 
+    # Attach keyword info to the parsed result
+    parsed_result["keywords_found"] = keywords_found
+    parsed_result["high_priority"] = bool(keywords_found)
+
     print("\nCategorization Result:")
     print(f"Category: {parsed_result['category']}")
     print(f"Reasoning: {parsed_result['reasoning']}")
@@ -84,6 +97,16 @@ try:
     # Persist result
     with open(os.path.join(CATEGORIZED_DIR, "call_category.json"), "w") as f:
         json.dump(parsed_result, f, indent=2)
+
+    # If keywords were found, persist a copy into a high‑priority queue
+    if keywords_found:
+        HIGH_PRIORITY_DIR = os.path.join(DATA_DIR, "high_priority_queue")
+        os.makedirs(HIGH_PRIORITY_DIR, exist_ok=True)
+        with open(os.path.join(HIGH_PRIORITY_DIR, "flagged_call.json"), "w") as hp_file:
+            json.dump(parsed_result, hp_file, indent=2)
+
+    if keywords_found:
+        print(f"\n⚠️  HIGH‑PRIORITY CALL flagged – keywords detected: {keywords_found}")
 
 except json.JSONDecodeError as e:
     print("Failed to decode JSON:", e)
